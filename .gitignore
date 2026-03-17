@@ -1,6 +1,6 @@
 ### Данные PostgreSQL
 docker/postgres-data/
-docker/pgadmin-data/.gradle
+docker/pgadmin-data/
 
 build/
 .gradle/

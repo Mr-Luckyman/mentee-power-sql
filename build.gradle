@@ -1,27 +1,77 @@
 plugins {
-    id 'java'
-    id 'application'
+	id 'java'
+	id 'application'
+	id 'com.diffplug.spotless' version '6.23.3'
+}
+
+ext {
+	versions = [
+			spotless        : '6.23.3',
+			postgresql      : '42.6.0',
+			lombok          : '1.18.30',
+			slf4j           : '2.0.9',
+			logback         : '1.4.11',
+			junit           : '5.10.2',
+			assertj         : '3.24.2',
+			googleJavaFormat: '1.24.0'
+	]
+}
+
+application {
+	mainClass = 'ru.mentee.power.connection.SecureConnection'
 }
 
 group = 'ru.mentee.power'
-version = '1.0-SNAPSHOT'
+version = '1.0.0'
 
-application {
-    mainClass = 'ru.mentee.power.SimpleConnection'
+java {
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
 }
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    implementation 'org.postgresql:postgresql:42.7.7'
+	implementation "org.postgresql:postgresql:${versions.postgresql}"
 
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	compileOnly "org.projectlombok:lombok:${versions.lombok}"
+	annotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+	testCompileOnly "org.projectlombok:lombok:${versions.lombok}"
+	testAnnotationProcessor "org.projectlombok:lombok:${versions.lombok}"
+
+	implementation "org.slf4j:slf4j-api:${versions.slf4j}"
+	implementation "ch.qos.logback:logback-classic:${versions.logback}"
+	implementation "ch.qos.logback:logback-core:${versions.logback}"
+
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
+	testImplementation "org.junit.jupiter:junit-jupiter-api:${versions.junit}"
+	testImplementation "org.junit.jupiter:junit-jupiter-params:${versions.junit}"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${versions.junit}"
+	testImplementation "org.assertj:assertj-core:${versions.assertj}"
+}
+
+spotless {
+	format 'misc', {
+		target '*.gradle', '.gitattributes', '.gitignore'
+		trimTrailingWhitespace()
+		indentWithTabs()
+		endWithNewline()
+	}
+	java {
+		googleJavaFormat("${versions.googleJavaFormat}").aosp().reflowLongStrings().skipJavadocFormatting()
+		formatAnnotations()
+		licenseHeader '/* @MENTEE_POWER (C)$YEAR */'
+	}
 }
 
 test {
-    useJUnitPlatform()
+	useJUnitPlatform()
+	javaLauncher = javaToolchains.launcherFor {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
 }

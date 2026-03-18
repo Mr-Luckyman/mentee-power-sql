@@ -68,10 +68,10 @@ public class ApplicationConfig implements DatabaseConfig, Overridable, Fileable 
 
     @Override
     public void override() {
-        String envUrl = System.getenv(DB_URL);
-        String envUsername = System.getenv(DB_USERNAME);
-        String envPassword = System.getenv(DB_PASSWORD);
-        String envDriver = System.getenv(DB_DRIVER);
+        String envUrl = System.getenv("DB_URL");
+        String envUsername = System.getenv("DB_USERNAME");
+        String envPassword = System.getenv("DB_PASSWORD");
+        String envDriver = System.getenv("DB_DRIVER");
         if (envUrl != null) {
             properties.setProperty(DB_URL, envUrl);
             log.info("{} переопределен из Environment Variable", DB_URL);
